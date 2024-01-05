@@ -11,7 +11,7 @@ typedef unsigned int u32;
 typedef signed long int i64;
 typedef unsigned long int u64;
 
-// Size types (64 bit word size only)
+// Size types
 typedef signed long int isize;
 typedef unsigned long int usize;
 

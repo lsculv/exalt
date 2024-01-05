@@ -1,15 +1,20 @@
-#include "../include/exsyscall.h"
+// These are typed wrappers around raw syscalls.
+#include "../include/ex/int.h"
+#include "../include/ex/sys/syscall.h"
 
-u64 sys_write(unsigned int fd, const char* buf, usize count) {
-    u64 result;
-    asm volatile("movq $1, %%rax;"
-                 "movl %[fd], %%edi;"
-                 "movq %[count], %%rdx;"
-                 "movq %[buf], %%rsi;"
-                 "syscall;"
-                 "movq %%rax, %[result];"
-                 : [result] "=r"(result)
-                 : [fd] "r"(fd), [buf] "r"(buf), [count] "r"(count)
-                 : "%rax", "%rdi", "%rsi", "%rdx");
-    return result;
+isize sys_read(u32 fd, void* buf, usize count) {
+    return (isize)syscall3(SYS_READ, (void*)(usize)fd, buf, (void*)count);
+}
+
+isize sys_write(u32 fd, const char* buf, usize count) {
+    return (isize)syscall3(SYS_WRITE, (void*)(usize)fd, (void*)buf, (void*)count);
+}
+
+i32 sys_open(const char* filename, i32 flags, u32 mode) {
+    return (i32)(isize)syscall3(SYS_OPEN, (void*)filename, (void*)(usize)flags,
+                                (void*)(isize)mode);
+}
+
+i32 sys_close(u32 fd) {
+    return (i32)(isize)syscall1(SYS_CLOSE, (void*)(usize)fd);
 }
