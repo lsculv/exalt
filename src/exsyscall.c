@@ -7,12 +7,13 @@ isize sys_read(u32 fd, void* buf, usize count) {
 }
 
 isize sys_write(u32 fd, const char* buf, usize count) {
-    return (isize)syscall3(SYS_WRITE, (void*)(usize)fd, (void*)buf, (void*)count);
+    return (isize)syscall3(
+        SYS_WRITE, (void*)(usize)fd, (void*)buf, (void*)count);
 }
 
 i32 sys_open(const char* filename, i32 flags, u32 mode) {
-    return (i32)(isize)syscall3(SYS_OPEN, (void*)filename, (void*)(usize)flags,
-                                (void*)(isize)mode);
+    return (i32)(isize)syscall3(
+        SYS_OPEN, (void*)filename, (void*)(usize)flags, (void*)(isize)mode);
 }
 
 i32 sys_close(u32 fd) {
