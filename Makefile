@@ -13,7 +13,7 @@ DEBUG_DIR=$(BUILD_DIR)/debug
 RELEASE_OBJECTS=$(addprefix $(RELEASE_DIR)/, $(OBJECTS))
 DEBUG_OBJECTS=$(addprefix $(DEBUG_DIR)/, $(OBJECTS))
 
-CFLAGS=-Wall -Wextra -Werror -I $(HEADER_DIR)
+CFLAGS=-Wall -Wextra -Werror -I $(HEADER_DIR) -nostdlib -nodefaultlibs
 RELEASE_FLAGS=-O2
 DEBUG_FLAGS=-g
 
@@ -53,8 +53,8 @@ $(RELEASE_DIR) $(DEBUG_DIR):
 
 .PHONY: fmt
 fmt:
-	fd -e 'c' -e 'h' | xargs clang-format --verbose -i 
+	fd -e 'c' -e 'h' | xargs clang-format --verbose -i
 
 .PHONY: clean
-clean: 
+clean:
 	rm -rf $(BUILD_DIR)

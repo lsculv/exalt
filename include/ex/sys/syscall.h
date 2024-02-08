@@ -11,14 +11,8 @@ extern void* syscall0(usize syscall_number);
 extern void* syscall1(usize syscall_number, void* arg1);
 extern void* syscall2(usize syscall_number, void* arg1, void* arg2);
 extern void* syscall3(usize syscall_number, void* arg1, void* arg2, void* arg3);
-extern void*
-syscall4(usize syscall_number, void* arg1, void* arg2, void* arg3, void* arg4);
-extern void* syscall5(usize syscall_number,
-                      void* arg1,
-                      void* arg2,
-                      void* arg3,
-                      void* arg4,
-                      void* arg5);
+extern void* syscall4(usize syscall_number, void* arg1, void* arg2, void* arg3, void* arg4);
+extern void* syscall5(usize syscall_number, void* arg1, void* arg2, void* arg3, void* arg4, void* arg5);
 
 #define SYS_READ 0
 #define SYS_WRITE 1
@@ -339,106 +333,134 @@ isize sys_read(u32 fd, void* buf, usize count);
 isize sys_write(u32 fd, const char* buf, usize count);
 i32 sys_open(const char* filename, i32 flags, u32 mode);
 i32 sys_close(u32 fd);
-/*
 UNIMPLEMENTED sys_stat(const char* filename, struct Stat* statbuf);
 UNIMPLEMENTED sys_fstat(u32 fd, struct Stat* statbuf);
 UNIMPLEMENTED sys_lstat(const char* filename, struct Stat* statbuf);
 UNIMPLEMENTED sys_poll(struct PollFd* ufds, u32 nfds, i32 timeout_msecs);
-UNIMPLEMENTED sys_lseek(u32 fd, Offset offset, u32 whence);
+Offset sys_lseek(u32 fd, Offset offset, u32 whence);
+/*
 UNIMPLEMENTED sys_mmap(u64 addr, u64 len, u64 prot, u64 flags, u64 fd, u64 off);
 UNIMPLEMENTED sys_mprotect(u64 start, usize len, u64 prot);
 UNIMPLEMENTED sys_munmap(u64 addr, usize len);
 UNIMPLEMENTED sys_brk(u64 brk);
-UNIMPLEMENTED sys_rt_sigaction(i32 sig, const struct SigAction* act,
-                               struct SigAction* oact, usize sigsetsize);
-UNIMPLEMENTED sys_rt_sigprocmask(i32 how, SigSet* nset, SigSet* oset, usize
-sigsetsize); UNIMPLEMENTED sys_rt_sigreturn(void); UNIMPLEMENTED sys_ioctl(u32
-fd, u32 cmd, u64 arg); UNIMPLEMENTED sys_pread64(u32 fd, char* buf, usize count,
-Offset pos); UNIMPLEMENTED sys_pwrite64(u32 fd, const char* buf, usize count,
-Offset pos); UNIMPLEMENTED sys_readv(u64 fd, const struct IoVec* vec, u64 vlen);
-UNIMPLEMENTED sys_writev(u64 fd, const struct IoVec* vec, u64 vlen);
-UNIMPLEMENTED sys_access(const char* filename, i32 mode);
-UNIMPLEMENTED sys_pipe(i32* fildes);
-UNIMPLEMENTED sys_select(i32 n, FdSet* inp, FdSet* outp, FdSet* exp, struct
-TimeVal* tvp); UNIMPLEMENTED sys_sched_yield(void); UNIMPLEMENTED sys_mremap(u64
-brk); UNIMPLEMENTED sys_msync(u64 start, usize len, i32 flags); UNIMPLEMENTED
-sys_mincore(u64 start, usize len, unsigned char* vec); UNIMPLEMENTED
-sys_madvise(u64 start, usize len_in, i32 behavior); UNIMPLEMENTED
-sys_shmget(IpcKey key, usize size, i32 shmflg); UNIMPLEMENTED sys_shmat(i32
-shmid, char* shmaddr, i32 shmflg); UNIMPLEMENTED sys_shmctl(i32 shmid, i32 cmd,
-struct shmid_ds* buf); UNIMPLEMENTED sys_dup(u32 fildes); UNIMPLEMENTED
-sys_dup2(u32 oldfd, u32 newfd); UNIMPLEMENTED sys_pause(void); UNIMPLEMENTED
-sys_nanosleep(struct TimeSpec* rqtp, struct TimeSpec* rmtp); UNIMPLEMENTED
-sys_getitimer(i32 which, struct ITimerVal* value); UNIMPLEMENTED sys_alarm(u32
-seconds); UNIMPLEMENTED sys_setitimer(i32 which, struct ITimerVal* value, struct
-ITimerVal* ovalue); UNIMPLEMENTED sys_getpid(void); UNIMPLEMENTED
-sys_sendfile(i32 out_fd, i32 in_fd, Offset* offset, usize count); UNIMPLEMENTED
-sys_socket(i32 family, i32 type, i32 protocol); UNIMPLEMENTED sys_connect(i32
-fd, struct SockAddr* uservaddr, i32 addrlen); UNIMPLEMENTED sys_accept(i32 fd,
-struct SockAddr* upeer_sockaddr, i32* upeer_addrlen); UNIMPLEMENTED
-sys_sendto(i32 fd, void* buff, usize len, u32 flags, struct SockAddr* addr, i32
-addr_len); UNIMPLEMENTED sys_recvfrom(i32 fd, void* ubuf, usize size, u32 flags,
-                           struct SockAddr* addr, i32* addr_len);
-UNIMPLEMENTED sys_sendmsg(i32 fd, struct MsgHdr* msg, u32 flags);
-UNIMPLEMENTED sys_recvmsg(i32 fd, struct MsgHdr* msg, u32 flags);
+UNIMPLEMENTED sys_rt_sigaction(i32 sig, const struct SigAction *act,
+                               struct SigAction *oact, usize sigsetsize);
+UNIMPLEMENTED sys_rt_sigprocmask(i32 how, SigSet *nset, SigSet *oset,
+                                 usize sigsetsize);
+UNIMPLEMENTED sys_rt_sigreturn(void);
+UNIMPLEMENTED sys_ioctl(u32 fd, u32 cmd, u64 arg);
+UNIMPLEMENTED sys_pread64(u32 fd, char *buf, usize count, Offset pos);
+UNIMPLEMENTED sys_pwrite64(u32 fd, const char *buf, usize count, Offset pos);
+UNIMPLEMENTED sys_readv(u64 fd, const struct IoVec *vec, u64 vlen);
+UNIMPLEMENTED sys_writev(u64 fd, const struct IoVec *vec, u64 vlen);
+UNIMPLEMENTED sys_access(const char *filename, i32 mode);
+UNIMPLEMENTED sys_pipe(i32 *fildes);
+UNIMPLEMENTED sys_select(i32 n, FdSet *inp, FdSet *outp, FdSet *exp,
+                         struct TimeVal *tvp);
+UNIMPLEMENTED sys_sched_yield(void);
+UNIMPLEMENTED sys_mremap(u64 brk);
+UNIMPLEMENTED sys_msync(u64 start, usize len, i32 flags);
+UNIMPLEMENTED
+sys_mincore(u64 start, usize len, unsigned char *vec);
+UNIMPLEMENTED
+sys_madvise(u64 start, usize len_in, i32 behavior);
+UNIMPLEMENTED
+sys_shmget(IpcKey key, usize size, i32 shmflg);
+UNIMPLEMENTED sys_shmat(i32 shmid, char *shmaddr, i32 shmflg);
+UNIMPLEMENTED sys_shmctl(i32 shmid, i32 cmd, struct shmid_ds *buf);
+UNIMPLEMENTED sys_dup(u32 fildes);
+UNIMPLEMENTED
+sys_dup2(u32 oldfd, u32 newfd);
+UNIMPLEMENTED sys_pause(void);
+UNIMPLEMENTED
+sys_nanosleep(struct TimeSpec *rqtp, struct TimeSpec *rmtp);
+UNIMPLEMENTED
+sys_getitimer(i32 which, struct ITimerVal *value);
+UNIMPLEMENTED sys_alarm(u32 seconds);
+UNIMPLEMENTED sys_setitimer(i32 which, struct ITimerVal *value,
+                            struct ITimerVal *ovalue);
+UNIMPLEMENTED sys_getpid(void);
+UNIMPLEMENTED
+sys_sendfile(i32 out_fd, i32 in_fd, Offset *offset, usize count);
+UNIMPLEMENTED
+sys_socket(i32 family, i32 type, i32 protocol);
+UNIMPLEMENTED sys_connect(i32 fd, struct SockAddr *uservaddr, i32 addrlen);
+UNIMPLEMENTED sys_accept(i32 fd, struct SockAddr *upeer_sockaddr,
+                         i32 *upeer_addrlen);
+UNIMPLEMENTED
+sys_sendto(i32 fd, void *buff, usize len, u32 flags, struct SockAddr *addr,
+           i32 addr_len);
+UNIMPLEMENTED sys_recvfrom(i32 fd, void *ubuf, usize size, u32 flags,
+                           struct SockAddr *addr, i32 *addr_len);
+UNIMPLEMENTED sys_sendmsg(i32 fd, struct MsgHdr *msg, u32 flags);
+UNIMPLEMENTED sys_recvmsg(i32 fd, struct MsgHdr *msg, u32 flags);
 UNIMPLEMENTED sys_shutdown(i32 fd, i32 how);
-UNIMPLEMENTED sys_bind(i32 fd, struct SockAddr* umyaddr, i32 addrlen);
+UNIMPLEMENTED sys_bind(i32 fd, struct SockAddr *umyaddr, i32 addrlen);
 UNIMPLEMENTED sys_listen(i32 fd, i32 backlog);
-UNIMPLEMENTED sys_getsockname(i32 fd, struct SockAddr* usockaddr, i32*
-usockaddr_len); UNIMPLEMENTED sys_getpeername(i32 fd, struct SockAddr*
-usockaddr, i32* usockaddr_len); UNIMPLEMENTED sys_socketpair(i32 family, i32
-type, i32 protocol, i32* usockvec); UNIMPLEMENTED sys_setsockopt(i32 fd, i32
-level, i32 optname, char* optval, i32 optlen); UNIMPLEMENTED sys_getsockopt(i32
-fd, i32 level, i32 optname, char* optval, i32* optlen); UNIMPLEMENTED
-sys_clone(u64 clone_flags, u64 newsp, i32* parent_tidptr, i32* child_tidptr, i32
-tls_val); UNIMPLEMENTED sys_fork(void); UNIMPLEMENTED sys_vfork(void);
-UNIMPLEMENTED sys_execve(const char* filename, const char* const* argv,
-                         const char* const* envp);
+UNIMPLEMENTED sys_getsockname(i32 fd, struct SockAddr *usockaddr,
+                              i32 *usockaddr_len);
+UNIMPLEMENTED sys_getpeername(i32 fd, struct SockAddr *usockaddr,
+                              i32 *usockaddr_len);
+UNIMPLEMENTED sys_socketpair(i32 family, i32 type, i32 protocol, i32 *usockvec);
+UNIMPLEMENTED sys_setsockopt(i32 fd, i32 level, i32 optname, char *optval,
+                             i32 optlen);
+UNIMPLEMENTED sys_getsockopt(i32 fd, i32 level, i32 optname, char *optval,
+                             i32 *optlen);
+UNIMPLEMENTED
+sys_clone(u64 clone_flags, u64 newsp, i32 *parent_tidptr, i32 *child_tidptr,
+          i32 tls_val);
+UNIMPLEMENTED sys_fork(void);
+UNIMPLEMENTED sys_vfork(void);
+UNIMPLEMENTED sys_execve(const char *filename, const char *const *argv,
+                         const char *const *envp);
 UNIMPLEMENTED sys_exit(i32 error_code);
-UNIMPLEMENTED sys_wait4(Pid upid, i32* stat_addr, i32 options, struct RUsage*
-ru); UNIMPLEMENTED sys_kill(Pid pid, i32 sig); UNIMPLEMENTED sys_uname(struct
-UtsName* name); UNIMPLEMENTED sys_semget(IpcKey key, i32 nsems, i32 semflg);
-UNIMPLEMENTED sys_semop(i32 semid, struct SemBuf* tsops, unsigned nsops);
+UNIMPLEMENTED sys_wait4(Pid upid, i32 *stat_addr, i32 options,
+                        struct RUsage *ru);
+UNIMPLEMENTED sys_kill(Pid pid, i32 sig);
+UNIMPLEMENTED sys_uname(struct UtsName *name);
+UNIMPLEMENTED sys_semget(IpcKey key, i32 nsems, i32 semflg);
+UNIMPLEMENTED sys_semop(i32 semid, struct SemBuf *tsops, unsigned nsops);
 UNIMPLEMENTED sys_semctl(i32 semid, i32 semnum, i32 cmd, u64 arg);
-UNIMPLEMENTED sys_shmdt(char* shmaddr);
+UNIMPLEMENTED sys_shmdt(char *shmaddr);
 UNIMPLEMENTED sys_msgget(IpcKey key, i32 msgflg);
 /// `msgp` should be a pointer to a MsgBuf struct the caller defines.
-UNIMPLEMENTED sys_msgsnd(i32 msqid, void* msgp, usize msgsz, i32 msgflg);
+UNIMPLEMENTED sys_msgsnd(i32 msqid, void *msgp, usize msgsz, i32 msgflg);
 /// `msgp` should be a pointer to a MsgBuf struct the caller defines.
-UNIMPLEMENTED sys_msgrcv(i32 msqid, void* msgp, usize msgsz, long msgtyp, i32
-msgflg); UNIMPLEMENTED sys_msgctl(i32 msqid, i32 cmd, struct MsqidDs* buf);
+UNIMPLEMENTED sys_msgrcv(i32 msqid, void *msgp, usize msgsz, long msgtyp,
+                         i32 msgflg);
+UNIMPLEMENTED sys_msgctl(i32 msqid, i32 cmd, struct MsqidDs *buf);
 UNIMPLEMENTED sys_fcntl(u32 fd, u32 cmd, u64 arg);
 UNIMPLEMENTED sys_flock(u32 fd, u32 cmd);
 UNIMPLEMENTED sys_fsync(u32 fd);
 UNIMPLEMENTED sys_fdatasync(u32 fd);
-UNIMPLEMENTED sys_truncate(const char* path, long length);
+UNIMPLEMENTED sys_truncate(const char *path, long length);
 UNIMPLEMENTED sys_ftruncate(u32 fd, u64 length);
-UNIMPLEMENTED sys_getdents(u32 fd, struct LinuxDirent* dirent, u32 count);
-UNIMPLEMENTED sys_getcwd(char* buf, u64 size);
-UNIMPLEMENTED sys_chdir(const char* filename);
+UNIMPLEMENTED sys_getdents(u32 fd, struct LinuxDirent *dirent, u32 count);
+UNIMPLEMENTED sys_getcwd(char *buf, u64 size);
+UNIMPLEMENTED sys_chdir(const char *filename);
 UNIMPLEMENTED sys_fchdir(u32 fd);
-UNIMPLEMENTED sys_rename(const char* oldname, const char* newname);
-UNIMPLEMENTED sys_mkdir(const char* pathname, u32 mode);
-UNIMPLEMENTED sys_rmdir(const char* pathname);
-UNIMPLEMENTED sys_creat(const char* pathname, u32 mode);
-UNIMPLEMENTED sys_link(const char* oldname, const char* newname);
-UNIMPLEMENTED sys_unlink(const char* pathname);
-UNIMPLEMENTED sys_symlink(const char* oldname, const char* newname);
-UNIMPLEMENTED sys_readlink(const char* path, char* buf, i32 bufsiz);
-UNIMPLEMENTED sys_chmod(const char* filename, u32 mode);
+UNIMPLEMENTED sys_rename(const char *oldname, const char *newname);
+UNIMPLEMENTED sys_mkdir(const char *pathname, u32 mode);
+UNIMPLEMENTED sys_rmdir(const char *pathname);
+UNIMPLEMENTED sys_creat(const char *pathname, u32 mode);
+UNIMPLEMENTED sys_link(const char *oldname, const char *newname);
+UNIMPLEMENTED sys_unlink(const char *pathname);
+UNIMPLEMENTED sys_symlink(const char *oldname, const char *newname);
+UNIMPLEMENTED sys_readlink(const char *path, char *buf, i32 bufsiz);
+UNIMPLEMENTED sys_chmod(const char *filename, u32 mode);
 UNIMPLEMENTED sys_fchmod(u32 fd, u32 mode);
-UNIMPLEMENTED sys_chown(const char* filename, Uid user, Gid group);
+UNIMPLEMENTED sys_chown(const char *filename, Uid user, Gid group);
 UNIMPLEMENTED sys_fchown(u32 fd, Uid user, Gid group);
-UNIMPLEMENTED sys_lchown(const char* filename, Uid user, Gid group);
+UNIMPLEMENTED sys_lchown(const char *filename, Uid user, Gid group);
 UNIMPLEMENTED sys_umask(i32 mask);
-UNIMPLEMENTED sys_gettimeofday(struct TimeVal* tv, struct Timezone* tz);
-UNIMPLEMENTED sys_getrlimit(u32 resource, struct rlimit* rlim);
-UNIMPLEMENTED sys_getrusage(i32 who, struct rusage* ru);
-UNIMPLEMENTED sys_sysinfo(struct sysinfo* info);
-UNIMPLEMENTED sys_times(struct tms* tbuf);
+UNIMPLEMENTED sys_gettimeofday(struct TimeVal *tv, struct Timezone *tz);
+UNIMPLEMENTED sys_getrlimit(u32 resource, struct rlimit *rlim);
+UNIMPLEMENTED sys_getrusage(i32 who, struct rusage *ru);
+UNIMPLEMENTED sys_sysinfo(struct sysinfo *info);
+UNIMPLEMENTED sys_times(struct tms *tbuf);
 UNIMPLEMENTED sys_ptrace(long request, long pid, u64 addr, u64 data);
 UNIMPLEMENTED sys_getuid(void);
-UNIMPLEMENTED sys_syslog(i32 type, char* buf, i32 len);
+UNIMPLEMENTED sys_syslog(i32 type, char *buf, i32 len);
 UNIMPLEMENTED sys_getgid(void);
 UNIMPLEMENTED sys_setuid(Uid uid);
 UNIMPLEMENTED sys_setgid(Gid gid);
@@ -450,71 +472,78 @@ UNIMPLEMENTED sys_getpgrp(void);
 UNIMPLEMENTED sys_setsid(void);
 UNIMPLEMENTED sys_setreuid(Uid ruid, Uid euid);
 UNIMPLEMENTED sys_setregid(Gid rgid, Gid egid);
-UNIMPLEMENTED sys_getgroups(i32 gidsetsize, Gid* grouplist);
-UNIMPLEMENTED sys_setgroups(i32 gidsetsize, Gid* grouplist);
+UNIMPLEMENTED sys_getgroups(i32 gidsetsize, Gid *grouplist);
+UNIMPLEMENTED sys_setgroups(i32 gidsetsize, Gid *grouplist);
 UNIMPLEMENTED sys_setresuid(Uid ruid, Uid euid, Uid suid);
-UNIMPLEMENTED sys_getresuid(Uid* ruidp, Uid* euidp, Uid* suidp);
+UNIMPLEMENTED sys_getresuid(Uid *ruidp, Uid *euidp, Uid *suidp);
 UNIMPLEMENTED sys_setresgid(Gid rgid, Gid egid, Gid sgid);
-UNIMPLEMENTED sys_getresgid(Gid* rgidp, Gid* egidp, Gid* sgidp);
+UNIMPLEMENTED sys_getresgid(Gid *rgidp, Gid *egidp, Gid *sgidp);
 UNIMPLEMENTED sys_getpgid(Pid pid);
 UNIMPLEMENTED sys_setfsuid(Uid uid);
 UNIMPLEMENTED sys_setfsgid(Gid gid);
 UNIMPLEMENTED sys_getsid(Pid pid);
 UNIMPLEMENTED sys_capget(CapUserHeader header, CapUserData dataptr);
 UNIMPLEMENTED sys_capset(CapUserHeader header, const CapUserData data);
-UNIMPLEMENTED sys_rt_sigpending(SigSet* uset, usize sigsetsize);
-UNIMPLEMENTED sys_rt_sigtimedwait(const SigSet* uthese, TODO(SigInfo) * uinfo,
-                                  const struct TimeSpec* uts, usize sigsetsize);
+UNIMPLEMENTED sys_rt_sigpending(SigSet *uset, usize sigsetsize);
+UNIMPLEMENTED sys_rt_sigtimedwait(const SigSet *uthese, TODO(SigInfo) * uinfo,
+                                  const struct TimeSpec *uts, usize sigsetsize);
 UNIMPLEMENTED sys_rt_sigqueueinfo(Pid pid, i32 sig, TODO(SigInfo) * uinfo);
-UNIMPLEMENTED sys_rt_sigsuspend(SigSet* unewset, usize sigsetsize);
-UNIMPLEMENTED sys_sigaltstack(const Stack* uss, Stack* uoss);
-UNIMPLEMENTED sys_utime(char* filename, struct utimbuf* times);
-UNIMPLEMENTED sys_mknod(const char* filename, u32 mode, unsigned dev);
-UNIMPLEMENTED sys_uselib(const char* library);
+UNIMPLEMENTED sys_rt_sigsuspend(SigSet *unewset, usize sigsetsize);
+UNIMPLEMENTED sys_sigaltstack(const Stack *uss, Stack *uoss);
+UNIMPLEMENTED sys_utime(char *filename, struct utimbuf *times);
+UNIMPLEMENTED sys_mknod(const char *filename, u32 mode, unsigned dev);
+UNIMPLEMENTED sys_uselib(const char *library);
 UNIMPLEMENTED sys_personality(u32 personality);
-UNIMPLEMENTED sys_ustat(unsigned dev, struct ustat* ubuf);
-UNIMPLEMENTED sys_statfs(const char* pathname, struct statfs* buf);
-UNIMPLEMENTED sys_fstatfs(u32 fd, struct statfs* buf);
+UNIMPLEMENTED sys_ustat(unsigned dev, struct ustat *ubuf);
+UNIMPLEMENTED sys_statfs(const char *pathname, struct statfs *buf);
+UNIMPLEMENTED sys_fstatfs(u32 fd, struct statfs *buf);
 UNIMPLEMENTED sys_sysfs(i32 option, u64 arg1, u64 arg2);
 UNIMPLEMENTED sys_getpriority(i32 which, i32 who);
 UNIMPLEMENTED sys_setpriority(i32 which, i32 who, i32 niceval);
-UNIMPLEMENTED sys_sched_setparam(Pid pid, struct sched_param* param);
-UNIMPLEMENTED sys_sched_getparam(Pid pid, struct sched_param* param);
-UNIMPLEMENTED sys_sched_setscheduler(Pid pid, i32 policy, struct sched_param*
-param); UNIMPLEMENTED sys_sched_getscheduler(Pid pid); UNIMPLEMENTED
-sys_sched_get_priority_max(i32 policy); UNIMPLEMENTED
-sys_sched_get_priority_min(i32 policy); UNIMPLEMENTED
-sys_sched_rr_get_i32erval(Pid pid, struct TimeSpec* i32erval); UNIMPLEMENTED
-sys_mlock(u64 start, usize len); UNIMPLEMENTED sys_munlock(u64 start, usize
-len); UNIMPLEMENTED sys_mlockall(i32 flags); UNIMPLEMENTED sys_munlockall(void);
+UNIMPLEMENTED sys_sched_setparam(Pid pid, struct sched_param *param);
+UNIMPLEMENTED sys_sched_getparam(Pid pid, struct sched_param *param);
+UNIMPLEMENTED sys_sched_setscheduler(Pid pid, i32 policy,
+                                     struct sched_param *param);
+UNIMPLEMENTED sys_sched_getscheduler(Pid pid);
+UNIMPLEMENTED
+sys_sched_get_priority_max(i32 policy);
+UNIMPLEMENTED
+sys_sched_get_priority_min(i32 policy);
+UNIMPLEMENTED
+sys_sched_rr_get_i32erval(Pid pid, struct TimeSpec *i32erval);
+UNIMPLEMENTED
+sys_mlock(u64 start, usize len);
+UNIMPLEMENTED sys_munlock(u64 start, usize len);
+UNIMPLEMENTED sys_mlockall(i32 flags);
+UNIMPLEMENTED sys_munlockall(void);
 UNIMPLEMENTED sys_vhangup(void);
-UNIMPLEMENTED sys_modify_ldt(i32 func, void* ptr, u64 bytecount);
-UNIMPLEMENTED sys_pivot_root(const char* new_root, const char* put_old);
-UNIMPLEMENTED sys__sysctl(struct __sysctl_args* args);
+UNIMPLEMENTED sys_modify_ldt(i32 func, void *ptr, u64 bytecount);
+UNIMPLEMENTED sys_pivot_root(const char *new_root, const char *put_old);
+UNIMPLEMENTED sys__sysctl(struct __sysctl_args *args);
 UNIMPLEMENTED sys_prctl(i32 option, u64 arg2, u64 arg3, u64 arg4, u64 arg5);
-UNIMPLEMENTED sys_arch_prctl(struct task_struct* task, i32 code, u64* addr);
-UNIMPLEMENTED sys_adjtimex(struct timex* txc_p);
-UNIMPLEMENTED sys_setrlimit(u32 resource, struct rlimit* rlim);
-UNIMPLEMENTED sys_chroot(const char* filename);
+UNIMPLEMENTED sys_arch_prctl(struct task_struct *task, i32 code, u64 *addr);
+UNIMPLEMENTED sys_adjtimex(struct timex *txc_p);
+UNIMPLEMENTED sys_setrlimit(u32 resource, struct rlimit *rlim);
+UNIMPLEMENTED sys_chroot(const char *filename);
 UNIMPLEMENTED sys_sync(void);
-UNIMPLEMENTED sys_acct(const char* name);
-UNIMPLEMENTED sys_settimeofday(struct TimeVal* tv, struct Timezone* tz);
-UNIMPLEMENTED sys_mount(char* dev_name, char* dir_name, char* type, u64 flags,
-                        void* data);
-UNIMPLEMENTED sys_umount2(char* name, i32 flags);
-UNIMPLEMENTED sys_swapon(const char* specialfile, i32 swap_flags);
-UNIMPLEMENTED sys_swapoff(const char* specialfile);
-UNIMPLEMENTED sys_reboot(i32 magic1, i32 magic2, u32 cmd, void* arg);
-UNIMPLEMENTED sys_sethostname(char* name, i32 len);
-UNIMPLEMENTED sys_setdomainname(char* name, i32 len);
+UNIMPLEMENTED sys_acct(const char *name);
+UNIMPLEMENTED sys_settimeofday(struct TimeVal *tv, struct Timezone *tz);
+UNIMPLEMENTED sys_mount(char *dev_name, char *dir_name, char *type, u64 flags,
+                        void *data);
+UNIMPLEMENTED sys_umount2(char *name, i32 flags);
+UNIMPLEMENTED sys_swapon(const char *specialfile, i32 swap_flags);
+UNIMPLEMENTED sys_swapoff(const char *specialfile);
+UNIMPLEMENTED sys_reboot(i32 magic1, i32 magic2, u32 cmd, void *arg);
+UNIMPLEMENTED sys_sethostname(char *name, i32 len);
+UNIMPLEMENTED sys_setdomainname(char *name, i32 len);
 UNIMPLEMENTED sys_iopl(u32 level);
 UNIMPLEMENTED sys_ioperm(u64 from, u64 num, i32 turn_on);
 UNIMPLEMENTED sys_create_module(void); // Unimplemented
-UNIMPLEMENTED sys_init_module(void* umod, u64 len, const char* uargs);
-UNIMPLEMENTED sys_delete_module(const char* name_user, u32 flags);
+UNIMPLEMENTED sys_init_module(void *umod, u64 len, const char *uargs);
+UNIMPLEMENTED sys_delete_module(const char *name_user, u32 flags);
 UNIMPLEMENTED sys_get_kernel_syms(void); // Unimplemented
 UNIMPLEMENTED sys_query_module(void);    // Unimplemented
-UNIMPLEMENTED sys_quotactl(u32 cmd, const char* special, Gid id, void* addr);
+UNIMPLEMENTED sys_quotactl(u32 cmd, const char *special, Gid id, void *addr);
 UNIMPLEMENTED sys_nfsservctl(void);  // Unimplemented
 UNIMPLEMENTED sys_getpmsg(void);     // Unimplemented
 UNIMPLEMENTED sys_putpmsg(void);     // Unimplemented
@@ -523,160 +552,222 @@ UNIMPLEMENTED sys_tuxcall(void);     // Unimplemented
 UNIMPLEMENTED sys_security(void);    // Unimplemented
 UNIMPLEMENTED sys_gettid(void);
 UNIMPLEMENTED sys_readahead(i32 fd, Offset offset, usize count);
-UNIMPLEMENTED sys_setxattr(const char* pathname, const char* name, const void*
-value, usize size, i32 flags); UNIMPLEMENTED sys_lsetxattr(const char* pathname,
-const char* name, const void* value, usize size, i32 flags); UNIMPLEMENTED
-sys_fsetxattr(i32 fd, const char* name, const void* value, usize size, i32
-flags); UNIMPLEMENTED sys_getxattr(const char* pathname, const char* name, void*
-value, usize size); UNIMPLEMENTED sys_lgetxattr(const char* pathname, const
-char* name, void* value, usize size); UNIMPLEMENTED sys_fgetxattr(i32 fd, const
-char* name, void* value, usize size); UNIMPLEMENTED sys_listxattr(const char*
-pathname, char* list, usize size); UNIMPLEMENTED sys_llistxattr(const char*
-pathname, char* list, usize size); UNIMPLEMENTED sys_flistxattr(i32 fd, char*
-list, usize size); UNIMPLEMENTED sys_removexattr(const char* pathname, const
-char* name); UNIMPLEMENTED sys_lremovexattr(const char* pathname, const char*
-name); UNIMPLEMENTED sys_fremovexattr(i32 fd, const char* name); UNIMPLEMENTED
-sys_tkill(Pid pid, i32 sig); UNIMPLEMENTED sys_time(Time* tloc); UNIMPLEMENTED
-sys_futex(u32* uaddr, i32 op, u32 val, struct TimeSpec* utime, u32* uaddr2, u32
-val3); UNIMPLEMENTED sys_sched_setaffinity(Pid pid, u32 len, u64*
-user_mask_ptr); UNIMPLEMENTED sys_sched_getaffinity(Pid pid, u32 len, u64*
-user_mask_ptr); UNIMPLEMENTED sys_set_thread_area(struct UserDesc* u_info);
-UNIMPLEMENTED sys_io_setup(unsigned nr_events, AioContext* ctxp);
+UNIMPLEMENTED sys_setxattr(const char *pathname, const char *name,
+                           const void *value, usize size, i32 flags);
+UNIMPLEMENTED sys_lsetxattr(const char *pathname, const char *name,
+                            const void *value, usize size, i32 flags);
+UNIMPLEMENTED
+sys_fsetxattr(i32 fd, const char *name, const void *value, usize size,
+              i32 flags);
+UNIMPLEMENTED sys_getxattr(const char *pathname, const char *name, void *value,
+                           usize size);
+UNIMPLEMENTED sys_lgetxattr(const char *pathname, const char *name, void *value,
+                            usize size);
+UNIMPLEMENTED sys_fgetxattr(i32 fd, const char *name, void *value, usize size);
+UNIMPLEMENTED sys_listxattr(const char *pathname, char *list, usize size);
+UNIMPLEMENTED sys_llistxattr(const char *pathname, char *list, usize size);
+UNIMPLEMENTED sys_flistxattr(i32 fd, char *list, usize size);
+UNIMPLEMENTED sys_removexattr(const char *pathname, const char *name);
+UNIMPLEMENTED sys_lremovexattr(const char *pathname, const char *name);
+UNIMPLEMENTED sys_fremovexattr(i32 fd, const char *name);
+UNIMPLEMENTED
+sys_tkill(Pid pid, i32 sig);
+UNIMPLEMENTED sys_time(Time *tloc);
+UNIMPLEMENTED
+sys_futex(u32 *uaddr, i32 op, u32 val, struct TimeSpec *utime, u32 *uaddr2,
+          u32 val3);
+UNIMPLEMENTED sys_sched_setaffinity(Pid pid, u32 len, u64 *user_mask_ptr);
+UNIMPLEMENTED sys_sched_getaffinity(Pid pid, u32 len, u64 *user_mask_ptr);
+UNIMPLEMENTED sys_set_thread_area(struct UserDesc *u_info);
+UNIMPLEMENTED sys_io_setup(unsigned nr_events, AioContext *ctxp);
 UNIMPLEMENTED sys_io_destroy(AioContext ctx);
 UNIMPLEMENTED sys_io_getevents(AioContext ctx_id, long min_nr, long nr,
-                               struct IoEvent* events, struct TimeSpec*
-timeout); UNIMPLEMENTED sys_io_submit(AioContext ctx_id, long nr, struct IoCb**
-iocbpp); UNIMPLEMENTED sys_io_cancel(AioContext ctx_id, struct IoCb* iocb,
-struct IoEvent* result); UNIMPLEMENTED sys_get_thread_area(struct UserDesc*
-u_info); UNIMPLEMENTED sys_lookup_dcookie(u64 cookie64, char* buf, usize len);
+                               struct IoEvent *events,
+                               struct TimeSpec *timeout);
+UNIMPLEMENTED sys_io_submit(AioContext ctx_id, long nr, struct IoCb **iocbpp);
+UNIMPLEMENTED sys_io_cancel(AioContext ctx_id, struct IoCb *iocb,
+                            struct IoEvent *result);
+UNIMPLEMENTED sys_get_thread_area(struct UserDesc *u_info);
+UNIMPLEMENTED sys_lookup_dcookie(u64 cookie64, char *buf, usize len);
 UNIMPLEMENTED sys_epoll_create(i32 size);
 UNIMPLEMENTED sys_epoll_ctl_old(void);  // Unimplemented
 UNIMPLEMENTED sys_epoll_wait_old(void); // Unimplemented
-UNIMPLEMENTED sys_remap_file_pages(u64 start, u64 size, u64 prot, u64 pgoff, u64
-flags); UNIMPLEMENTED sys_getdents64(u32 fd, struct LinuxDirent64* dirent, u32
-count); UNIMPLEMENTED sys_set_tid_address(i32* tidptr); UNIMPLEMENTED
-sys_restart_syscall(void); UNIMPLEMENTED sys_semtimedop(i32 semid, struct
-SemBuf* tsops, unsigned nsops, const struct TimeSpec* timeout); UNIMPLEMENTED
-sys_fadvise64(i32 fd, Offset offset, usize len, i32 advice); UNIMPLEMENTED
-sys_timer_create(const ClockId which_clock, struct sigevent* timer_event_spec,
-                               Timer* created_timer_id);
+UNIMPLEMENTED sys_remap_file_pages(u64 start, u64 size, u64 prot, u64 pgoff,
+                                   u64 flags);
+UNIMPLEMENTED sys_getdents64(u32 fd, struct LinuxDirent64 *dirent, u32 count);
+UNIMPLEMENTED sys_set_tid_address(i32 *tidptr);
+UNIMPLEMENTED
+sys_restart_syscall(void);
+UNIMPLEMENTED sys_semtimedop(i32 semid, struct SemBuf *tsops, unsigned nsops,
+                             const struct TimeSpec *timeout);
+UNIMPLEMENTED
+sys_fadvise64(i32 fd, Offset offset, usize len, i32 advice);
+UNIMPLEMENTED
+sys_timer_create(const ClockId which_clock, struct sigevent *timer_event_spec,
+                 Timer *created_timer_id);
 UNIMPLEMENTED sys_timer_settime(Timer timer_id, i32 flags,
-                                const struct ITimerSpec* new_setting,
-                                struct ITimerSpec* old_setting);
-UNIMPLEMENTED sys_timer_gettime(Timer timer_id, struct ITimerSpec* setting);
+                                const struct ITimerSpec *new_setting,
+                                struct ITimerSpec *old_setting);
+UNIMPLEMENTED sys_timer_gettime(Timer timer_id, struct ITimerSpec *setting);
 UNIMPLEMENTED sys_timer_getoverrun(Timer timer_id);
 UNIMPLEMENTED sys_timer_delete(Timer timer_id);
-UNIMPLEMENTED sys_clock_settime(const ClockId which_clock, const struct
-TimeSpec* tp); UNIMPLEMENTED sys_clock_gettime(const ClockId which_clock, struct
-TimeSpec* tp); UNIMPLEMENTED sys_clock_getres(const ClockId which_clock, struct
-TimeSpec* tp); UNIMPLEMENTED sys_clock_nanosleep(const ClockId which_clock, i32
-flags, const struct TimeSpec* rqtp, struct TimeSpec* rmtp); UNIMPLEMENTED
-sys_exit_group(i32 error_code); UNIMPLEMENTED sys_epoll_wait(i32 epfd, struct
-EpollEvent* events, i32 maxevents, i32 timeout); UNIMPLEMENTED sys_epoll_ctl(i32
-epfd, i32 op, i32 fd, struct EpollEvent* event); UNIMPLEMENTED sys_tgkill(Pid
-tgid, Pid pid, i32 sig); UNIMPLEMENTED sys_utimes(char* filename, struct
-TimeVal* utimes); UNIMPLEMENTED sys_vserver(void); // Unimplemented
-UNIMPLEMENTED sys_mbind(u64 start, u64 len, u64 mode, u64* nmask, u64 maxnode,
+UNIMPLEMENTED sys_clock_settime(const ClockId which_clock,
+                                const struct TimeSpec *tp);
+UNIMPLEMENTED sys_clock_gettime(const ClockId which_clock, struct TimeSpec *tp);
+UNIMPLEMENTED sys_clock_getres(const ClockId which_clock, struct TimeSpec *tp);
+UNIMPLEMENTED sys_clock_nanosleep(const ClockId which_clock, i32 flags,
+                                  const struct TimeSpec *rqtp,
+                                  struct TimeSpec *rmtp);
+UNIMPLEMENTED
+sys_exit_group(i32 error_code);
+UNIMPLEMENTED sys_epoll_wait(i32 epfd, struct EpollEvent *events, i32 maxevents,
+                             i32 timeout);
+UNIMPLEMENTED sys_epoll_ctl(i32 epfd, i32 op, i32 fd, struct EpollEvent *event);
+UNIMPLEMENTED sys_tgkill(Pid tgid, Pid pid, i32 sig);
+UNIMPLEMENTED sys_utimes(char *filename, struct TimeVal *utimes);
+UNIMPLEMENTED sys_vserver(void); // Unimplemented
+UNIMPLEMENTED sys_mbind(u64 start, u64 len, u64 mode, u64 *nmask, u64 maxnode,
                         unsigned flags);
-UNIMPLEMENTED sys_set_mempolicy(i32 mode, u64* nmask, u64 maxnode);
-UNIMPLEMENTED sys_get_mempolicy(i32* policy, u64* nmask, u64 maxnode, u64 addr,
+UNIMPLEMENTED sys_set_mempolicy(i32 mode, u64 *nmask, u64 maxnode);
+UNIMPLEMENTED sys_get_mempolicy(i32 *policy, u64 *nmask, u64 maxnode, u64 addr,
                                 u64 flags);
-UNIMPLEMENTED sys_mq_open(const char* u_name, i32 oflag, u32 mode,
-                          struct mq_attr* u_attr);
-UNIMPLEMENTED sys_mq_unlink(const char* u_name);
-UNIMPLEMENTED sys_mq_timedsend(MsgQueueDescriptor mqdes, const char* u_msg_ptr,
+UNIMPLEMENTED sys_mq_open(const char *u_name, i32 oflag, u32 mode,
+                          struct mq_attr *u_attr);
+UNIMPLEMENTED sys_mq_unlink(const char *u_name);
+UNIMPLEMENTED sys_mq_timedsend(MsgQueueDescriptor mqdes, const char *u_msg_ptr,
                                usize msg_len, u32 msg_prio,
-                               const struct TimeSpec* u_abs_timeout);
-UNIMPLEMENTED sys_mq_timedreceive(MsgQueueDescriptor mqdes, char* u_msg_ptr,
-                                  usize msg_len, u32* u_msg_prio,
-                                  const struct TimeSpec* u_abs_timeout);
+                               const struct TimeSpec *u_abs_timeout);
+UNIMPLEMENTED sys_mq_timedreceive(MsgQueueDescriptor mqdes, char *u_msg_ptr,
+                                  usize msg_len, u32 *u_msg_prio,
+                                  const struct TimeSpec *u_abs_timeout);
 UNIMPLEMENTED sys_mq_notify(MsgQueueDescriptor mqdes,
-                            const struct sigevent* u_notification);
-UNIMPLEMENTED sys_mq_getsetattr(MsgQueueDescriptor mqdes, const struct mq_attr*
-u_mqstat, struct mq_attr* u_omqstat); UNIMPLEMENTED sys_kexec_load(u64 entry,
-u64 nr_segments, struct kexec_segment* segments, u64 flags); UNIMPLEMENTED
-sys_waitid(i32 which, Pid upid, struct siginfo* infop, i32 options, struct
-rusage* ru); UNIMPLEMENTED sys_add_key(const char* _type, const char*
-_description, const void* _payload, usize plen, key_serial_t ringid);
-UNIMPLEMENTED sys_request_key(const char* _type, const char* _description,
-                              const char* _callout_info, key_serial_t
-destringid); UNIMPLEMENTED sys_keyctl(i32 option, u64 arg2, u64 arg3, u64 arg4,
-u64 arg5); UNIMPLEMENTED sys_ioprio_set(i32 which, i32 who, i32 ioprio);
+                            const struct sigevent *u_notification);
+UNIMPLEMENTED sys_mq_getsetattr(MsgQueueDescriptor mqdes,
+                                const struct mq_attr *u_mqstat,
+                                struct mq_attr *u_omqstat);
+UNIMPLEMENTED sys_kexec_load(u64 entry, u64 nr_segments,
+                             struct kexec_segment *segments, u64 flags);
+UNIMPLEMENTED
+sys_waitid(i32 which, Pid upid, struct siginfo *infop, i32 options,
+           struct rusage *ru);
+UNIMPLEMENTED sys_add_key(const char *_type, const char *_description,
+                          const void *_payload, usize plen,
+                          key_serial_t ringid);
+UNIMPLEMENTED sys_request_key(const char *_type, const char *_description,
+                              const char *_callout_info,
+                              key_serial_t destringid);
+UNIMPLEMENTED sys_keyctl(i32 option, u64 arg2, u64 arg3, u64 arg4, u64 arg5);
+UNIMPLEMENTED sys_ioprio_set(i32 which, i32 who, i32 ioprio);
 UNIMPLEMENTED sys_ioprio_get(i32 which, i32 who);
 UNIMPLEMENTED sys_inotify_init(void);
-UNIMPLEMENTED sys_inotify_add_watch(i32 fd, const char* pathname, u32 mask);
+UNIMPLEMENTED sys_inotify_add_watch(i32 fd, const char *pathname, u32 mask);
 UNIMPLEMENTED sys_inotify_rm_watch(i32 fd, i32 wd);
-UNIMPLEMENTED sys_migrate_pages(Pid pid, u64 maxnode, const u64* old_nodes,
-                                const u64* new_nodes);
-UNIMPLEMENTED sys_openat(i32 dfd, const char* filename, i32 flags, u32 mode);
-UNIMPLEMENTED sys_mkdirat(i32 dfd, const char* pathname, u32 mode);
-UNIMPLEMENTED sys_mknodat(i32 dfd, const char* filename, u32 mode, unsigned
-dev); UNIMPLEMENTED sys_fchownat(i32 dfd, const char* filename, Uid user, Gid
-group, i32 flag); UNIMPLEMENTED sys_futimesat(i32 dfd, const char* filename,
-struct TimeVal* utimes); UNIMPLEMENTED sys_newfstatat(i32 dfd, const char*
-filename, struct Stat* statbuf, i32 flag); UNIMPLEMENTED sys_unlinkat(i32 dfd,
-const char* pathname, i32 flag); UNIMPLEMENTED sys_renameat(i32 olddfd, const
-char* oldname, i32 newdfd, const char* newname); UNIMPLEMENTED sys_linkat(i32
-olddfd, const char* oldname, i32 newdfd, const char* newname, i32 flags);
-UNIMPLEMENTED sys_symlinkat(const char* oldname, i32 newdfd, const char*
-newname); UNIMPLEMENTED sys_readlinkat(i32 dfd, const char* pathname, char* buf,
-i32 bufsiz); UNIMPLEMENTED sys_fchmodat(i32 dfd, const char* filename, u32
-mode); UNIMPLEMENTED sys_faccessat(i32 dfd, const char* filename, i32 mode);
-UNIMPLEMENTED sys_pselect6(i32 n, FdSet* inp, FdSet* outp, FdSet* exp,
-                           struct TimeSpec* tsp, void* sig);
-UNIMPLEMENTED sys_ppoll(struct PollFd* ufds, u32 nfds, struct TimeSpec* tsp,
-                        const SigSet* sigmask, usize sigsetsize);
+UNIMPLEMENTED sys_migrate_pages(Pid pid, u64 maxnode, const u64 *old_nodes,
+                                const u64 *new_nodes);
+UNIMPLEMENTED sys_openat(i32 dfd, const char *filename, i32 flags, u32 mode);
+UNIMPLEMENTED sys_mkdirat(i32 dfd, const char *pathname, u32 mode);
+UNIMPLEMENTED sys_mknodat(i32 dfd, const char *filename, u32 mode,
+                          unsigned dev);
+UNIMPLEMENTED sys_fchownat(i32 dfd, const char *filename, Uid user, Gid group,
+                           i32 flag);
+UNIMPLEMENTED sys_futimesat(i32 dfd, const char *filename,
+                            struct TimeVal *utimes);
+UNIMPLEMENTED sys_newfstatat(i32 dfd, const char *filename,
+                             struct Stat *statbuf, i32 flag);
+UNIMPLEMENTED sys_unlinkat(i32 dfd, const char *pathname, i32 flag);
+UNIMPLEMENTED sys_renameat(i32 olddfd, const char *oldname, i32 newdfd,
+                           const char *newname);
+UNIMPLEMENTED sys_linkat(i32 olddfd, const char *oldname, i32 newdfd,
+                         const char *newname, i32 flags);
+UNIMPLEMENTED sys_symlinkat(const char *oldname, i32 newdfd,
+                            const char *newname);
+UNIMPLEMENTED sys_readlinkat(i32 dfd, const char *pathname, char *buf,
+                             i32 bufsiz);
+UNIMPLEMENTED sys_fchmodat(i32 dfd, const char *filename, u32 mode);
+UNIMPLEMENTED sys_faccessat(i32 dfd, const char *filename, i32 mode);
+UNIMPLEMENTED sys_pselect6(i32 n, FdSet *inp, FdSet *outp, FdSet *exp,
+                           struct TimeSpec *tsp, void *sig);
+UNIMPLEMENTED sys_ppoll(struct PollFd *ufds, u32 nfds, struct TimeSpec *tsp,
+                        const SigSet *sigmask, usize sigsetsize);
 UNIMPLEMENTED sys_unshare(u64 unshare_flags);
-UNIMPLEMENTED sys_set_robust_list(struct robust_list_head* head, usize len);
-UNIMPLEMENTED sys_get_robust_list(i32 pid, struct robust_list_head** head_ptr,
-                                  usize* len_ptr);
-UNIMPLEMENTED sys_splice(i32 fd_in, Offset* off_in, i32 fd_out, Offset* off_out,
+UNIMPLEMENTED sys_set_robust_list(struct robust_list_head *head, usize len);
+UNIMPLEMENTED sys_get_robust_list(i32 pid, struct robust_list_head **head_ptr,
+                                  usize *len_ptr);
+UNIMPLEMENTED sys_splice(i32 fd_in, Offset *off_in, i32 fd_out, Offset *off_out,
                          usize len, u32 flags);
 UNIMPLEMENTED sys_tee(i32 fdin, i32 fdout, usize len, u32 flags);
-UNIMPLEMENTED sys_sync_file_range(i32 fd, Offset offset, Offset nbytes, u32
-flags); UNIMPLEMENTED sys_vmsplice(i32 fd, const struct IoVec* iov, u64 nr_segs,
-u32 flags); UNIMPLEMENTED sys_move_pages(Pid pid, u64 nr_pages, const void**
-pages, const i32* nodes, i32* status, i32 flags); UNIMPLEMENTED
-sys_utimensat(i32 dfd, const char* filename, struct TimeSpec* utimes, i32
-flags); UNIMPLEMENTED sys_epoll_pwait(i32 epfd, struct EpollEvent* events, i32
-maxevents, i32 timeout, const SigSet* sigmask, usize sigsetsize); UNIMPLEMENTED
-sys_signalfd(i32 ufd, SigSet* user_mask, usize sizemask); UNIMPLEMENTED
-sys_timerfd_create(i32 clockid, i32 flags); UNIMPLEMENTED sys_eventfd(u32
-count); UNIMPLEMENTED sys_fallocate(i32 fd, i32 mode, Offset offset, Offset
-len); UNIMPLEMENTED sys_timerfd_settime(i32 ufd, i32 flags, const struct
-ITimerSpec* utmr, struct ITimerSpec* otmr); UNIMPLEMENTED
-sys_timerfd_gettime(i32 ufd, struct ITimerSpec* otmr); UNIMPLEMENTED
-sys_accept4(i32 fd, struct SockAddr* upeer_sockaddr, i32* upeer_addrlen, i32
-flags); UNIMPLEMENTED sys_signalfd4(i32 ufd, SigSet* user_mask, usize sizemask,
-i32 flags); UNIMPLEMENTED sys_eventfd2(u32 count, i32 flags); UNIMPLEMENTED
-sys_epoll_create1(i32 flags); UNIMPLEMENTED sys_dup3(u32 oldfd, u32 newfd, i32
-flags); UNIMPLEMENTED sys_pipe2(i32* fildes, i32 flags); UNIMPLEMENTED
-sys_inotify_init1(i32 flags); UNIMPLEMENTED sys_preadv(u64 fd, const struct
-IoVec* vec, u64 vlen, u64 pos_l, u64 pos_h); UNIMPLEMENTED sys_pwritev(u64 fd,
-const struct IoVec* vec, u64 vlen, u64 pos_l, u64 pos_h); UNIMPLEMENTED
+UNIMPLEMENTED sys_sync_file_range(i32 fd, Offset offset, Offset nbytes,
+                                  u32 flags);
+UNIMPLEMENTED sys_vmsplice(i32 fd, const struct IoVec *iov, u64 nr_segs,
+                           u32 flags);
+UNIMPLEMENTED sys_move_pages(Pid pid, u64 nr_pages, const void **pages,
+                             const i32 *nodes, i32 *status, i32 flags);
+UNIMPLEMENTED
+sys_utimensat(i32 dfd, const char *filename, struct TimeSpec *utimes,
+              i32 flags);
+UNIMPLEMENTED sys_epoll_pwait(i32 epfd, struct EpollEvent *events,
+                              i32 maxevents, i32 timeout, const SigSet *sigmask,
+                              usize sigsetsize);
+UNIMPLEMENTED
+sys_signalfd(i32 ufd, SigSet *user_mask, usize sizemask);
+UNIMPLEMENTED
+sys_timerfd_create(i32 clockid, i32 flags);
+UNIMPLEMENTED sys_eventfd(u32 count);
+UNIMPLEMENTED sys_fallocate(i32 fd, i32 mode, Offset offset, Offset len);
+UNIMPLEMENTED sys_timerfd_settime(i32 ufd, i32 flags,
+                                  const struct ITimerSpec *utmr,
+                                  struct ITimerSpec *otmr);
+UNIMPLEMENTED
+sys_timerfd_gettime(i32 ufd, struct ITimerSpec *otmr);
+UNIMPLEMENTED
+sys_accept4(i32 fd, struct SockAddr *upeer_sockaddr, i32 *upeer_addrlen,
+            i32 flags);
+UNIMPLEMENTED sys_signalfd4(i32 ufd, SigSet *user_mask, usize sizemask,
+                            i32 flags);
+UNIMPLEMENTED sys_eventfd2(u32 count, i32 flags);
+UNIMPLEMENTED
+sys_epoll_create1(i32 flags);
+UNIMPLEMENTED sys_dup3(u32 oldfd, u32 newfd, i32 flags);
+UNIMPLEMENTED sys_pipe2(i32 *fildes, i32 flags);
+UNIMPLEMENTED
+sys_inotify_init1(i32 flags);
+UNIMPLEMENTED sys_preadv(u64 fd, const struct IoVec *vec, u64 vlen, u64 pos_l,
+                         u64 pos_h);
+UNIMPLEMENTED sys_pwritev(u64 fd, const struct IoVec *vec, u64 vlen, u64 pos_l,
+                          u64 pos_h);
+UNIMPLEMENTED
 sys_rt_tgsigqueueinfo(Pid tgid, Pid pid, i32 sig, TODO(SigInfo) * uinfo);
-UNIMPLEMENTED sys_perf_event_open(struct perf_event_attr* attr_uptr, Pid pid,
-i32 cpu, i32 group_fd, u64 flags); UNIMPLEMENTED sys_recvmmsg(i32 fd, struct
-mmsghdr* mmsg, u32 vlen, u32 flags, struct TimeSpec* timeout); UNIMPLEMENTED
-sys_fanotify_init(u32 flags, u32 event_f_flags); UNIMPLEMENTED
-sys_fanotify_mark(i32 fanotify_fd, u32 flags, u64 mask, i32 dfd, const char*
-pathname); UNIMPLEMENTED sys_prlimit64(Pid pid, u32 resource, const struct
-rlimit64* new_rlim, struct rlimit64* old_rlim); UNIMPLEMENTED
-sys_name_to_handle_at(i32 dfd, const char* name, struct file_handle* handle,
-                                    i32* mnt_id, i32 flag);
-UNIMPLEMENTED sys_open_by_handle_at(i32 mountdirfd, struct file_handle* handle,
+UNIMPLEMENTED sys_perf_event_open(struct perf_event_attr *attr_uptr, Pid pid,
+                                  i32 cpu, i32 group_fd, u64 flags);
+UNIMPLEMENTED sys_recvmmsg(i32 fd, struct mmsghdr *mmsg, u32 vlen, u32 flags,
+                           struct TimeSpec *timeout);
+UNIMPLEMENTED
+sys_fanotify_init(u32 flags, u32 event_f_flags);
+UNIMPLEMENTED
+sys_fanotify_mark(i32 fanotify_fd, u32 flags, u64 mask, i32 dfd,
+                  const char *pathname);
+UNIMPLEMENTED sys_prlimit64(Pid pid, u32 resource,
+                            const struct rlimit64 *new_rlim,
+                            struct rlimit64 *old_rlim);
+UNIMPLEMENTED
+sys_name_to_handle_at(i32 dfd, const char *name, struct file_handle *handle,
+                      i32 *mnt_id, i32 flag);
+UNIMPLEMENTED sys_open_by_handle_at(i32 mountdirfd, struct file_handle *handle,
                                     i32 flags);
-UNIMPLEMENTED sys_clock_adjtime(const ClockId which_clock, struct timex* utx);
+UNIMPLEMENTED sys_clock_adjtime(const ClockId which_clock, struct timex *utx);
 UNIMPLEMENTED sys_syncfs(i32 fd);
-UNIMPLEMENTED sys_sendmmsg(i32 fd, struct mmsghdr* mmsg, u32 vlen, u32 flags);
+UNIMPLEMENTED sys_sendmmsg(i32 fd, struct mmsghdr *mmsg, u32 vlen, u32 flags);
 UNIMPLEMENTED sys_setns(i32 fd, i32 nstype);
-UNIMPLEMENTED sys_getcpu(unsigned* cpup, unsigned* nodep, struct getcpu_cache*
-unused); UNIMPLEMENTED sys_process_vm_readv(Pid pid, const struct IoVec* lvec,
-u64 liovcnt, const struct IoVec* rvec, u64 riovcnt, u64 flags); UNIMPLEMENTED
-sys_process_vm_writev(Pid pid, const struct IoVec* lvec, u64 liovcnt, const
-struct IoVec* rvec, u64 riovcnt, u64 flags); UNIMPLEMENTED sys_kcmp(Pid pid1,
-Pid pid2, i32 type, u64 idx1, u64 idx2); UNIMPLEMENTED sys_finit_module(i32 fd,
-const char* uargs, i32 flags);
+UNIMPLEMENTED sys_getcpu(unsigned *cpup, unsigned *nodep,
+                         struct getcpu_cache *unused);
+UNIMPLEMENTED sys_process_vm_readv(Pid pid, const struct IoVec *lvec,
+                                   u64 liovcnt, const struct IoVec *rvec,
+                                   u64 riovcnt, u64 flags);
+UNIMPLEMENTED
+sys_process_vm_writev(Pid pid, const struct IoVec *lvec, u64 liovcnt,
+                      const struct IoVec *rvec, u64 riovcnt, u64 flags);
+UNIMPLEMENTED sys_kcmp(Pid pid1, Pid pid2, i32 type, u64 idx1, u64 idx2);
+UNIMPLEMENTED sys_finit_module(i32 fd, const char *uargs, i32 flags);
 */
 
 #endif // ifndef EXALT_EXSYSCALL_H
