@@ -1,8 +1,8 @@
 #ifndef EXALT_EXSYSCALL_H
 #define EXALT_EXSYSCALL_H
 
-#include "../int.h"
-#include "systypes.h"
+#include <exalt.h>
+#include <ex/sys/systypes.h>
 
 #define UNIMPLEMENTED void*
 #define TODO(impl) impl

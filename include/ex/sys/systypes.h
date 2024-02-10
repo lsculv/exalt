@@ -2,7 +2,7 @@
 #ifndef EXALT_EXSYSTYPES_H
 #define EXALT_EXSYSTYPES_H
 
-#include "../int.h"
+#include <exalt.h>
 
 typedef struct {
     void* ss_sp;
