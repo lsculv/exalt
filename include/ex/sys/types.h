@@ -4,6 +4,48 @@
 
 #include <exalt.h>
 
+// Integer type redefinitions
+// These are used by certain system calls instead of the actual integer type
+// partially for clarity, but also because different systems can have different
+// underlying values for these types. These are the ones for modern x86_64 Linux
+typedef i64 Time;
+typedef i64 SignedMicros;
+typedef i64 SignedNanos;
+typedef i64 Clock;
+typedef i32 ClockId;
+
+typedef u64 DeviceId;
+typedef u64 InodeId;
+typedef u64 NLinks;
+typedef u32 Mode;
+
+typedef i32 Pid;
+typedef u32 Uid;
+typedef u32 Gid;
+
+typedef isize Offset;
+typedef isize BlockSize;
+typedef isize BlockCount;
+
+typedef u16 SAFamily;
+typedef u32 SockLen;
+
+typedef i32 MsgQueueDescriptor;
+typedef i32 IpcKey;
+
+/// Represents the amount of messages in a message queue.
+typedef u64 MsgQueueCount;
+/// Represents the amount of bytes allowed on the queue.
+typedef u64 MsgLen;
+
+typedef u64 AioContext;
+typedef i32 KernelRwf;
+
+typedef usize SharedMemAttaches;
+
+typedef usize RLimit;
+typedef usize RLimit64;
+
 typedef struct {
     void* ss_sp;
     i32 ss_flags;
@@ -21,10 +63,6 @@ typedef i64 __FdMask;
 typedef struct {
     __FdMask __fds_bits[__FD_SETSIZE / __NFDBITS];
 } FdSet;
-
-struct Stat {};
-
-typedef isize Offset;
 
 struct LinuxDirent {
     u64 d_ino;     // inode number
@@ -49,10 +87,6 @@ struct IoVec {
     void* iov_base; // data
     usize iov_len;  // length of data
 };
-
-typedef i64 Time;
-typedef i64 SignedMicros;
-typedef i64 SignedNanos;
 
 struct TimeVal {
     Time tv_sec;          // seconds
@@ -82,11 +116,24 @@ struct Timezone {
     i32 tz_dsttime;     // Daylight savings time correction
 };
 
-typedef void* Timer;
-typedef i32 ClockId;
+struct Stat {
+    DeviceId device;
+    InodeId inode;
+    NLinks nlink;
+    Mode mode;
+    Uid uid;
+    Gid gid;
+    i32 __pad0;
+    DeviceId special_device;
+    Offset size;
+    BlockSize blocksize;
+    BlockCount blocks;
+    struct TimeSpec access_time;
+    struct TimeSpec modify_time;
+    struct TimeSpec change_time;
+    isize __libc_reserved[3];
+};
 
-typedef u16 SAFamily;
-typedef u32 SockLen;
 struct SockAddr {
     SAFamily sa_family;
     char sa_data[14];
@@ -125,14 +172,6 @@ struct MsgHdr {
         char msg_text[msg_size];               \
     };
 
-typedef i32 MsgQueueDescriptor;
-
-typedef i32 Pid;
-typedef u32 Uid;
-typedef u32 Gid;
-
-typedef i32 IpcKey;
-
 struct IpcPerm {
     IpcKey key; // Key given to msgget
     Uid uid;    // Effective UID of the owner
@@ -142,11 +181,6 @@ struct IpcPerm {
     u16 mode;   // Permissions
     u16 seq;    // Sequence number
 };
-
-/// Represents the amount of messages in a message queue.
-typedef u64 MsgQueueCount;
-/// Represents the amount of bytes allowed on the queue.
-typedef u64 MsgLen;
 
 struct MsqidDs {
     struct IpcPerm msg_perm; // structure describing operation permission
@@ -240,9 +274,6 @@ struct UserDesc {
     unsigned int lm : 1;
 };
 
-typedef u64 AioContext;
-typedef i32 KernelRwf;
-
 struct IoCb {
     /* these are internal to the kernel/libc. */
     u64 aio_data; /* data to be returned in event's data */
@@ -292,9 +323,46 @@ struct EpollEvent {
     EpollData data; /* User data variable */
 } __attribute__((__packed__));
 
+typedef void* Timer;
+
+typedef union {
+   i32 integer;
+   void* ptr;
+} SigVal;
 // TODO: Implement this struct. The glibc source is below. Good luck.
 // Might want to look at the Rust libc crate source or the musl source as well
 typedef struct {
+    i32 signal_number;
+    i32 error_number;
+    i32 code;
+    i32 __pad0;
+    union {
+        i32 _pad[28];
+        struct {
+            Pid pid;
+            Uid uid;
+        } kill;
+        struct {
+            i32 tid;
+            i32 overrun;
+        } timer;
+        struct {
+            Pid pid;
+            Uid uid;
+            SigVal signal_value;
+        } rt;
+        struct {
+            Pid pid;
+            Uid uid;
+            i32 status;
+            Clock utime; // TODO: Look into meaning of these field names
+            Clock stime; //
+        } sigchld;
+        struct {} sigfault;
+        struct {} sigpoll;
+        struct {} sigsys;
+    } feilds;
+
 } SigInfo;
 
 // typedef struct
@@ -398,5 +466,28 @@ typedef struct {
     u32 permitted;
     u32 inheritable;
 }* CapUserData;
+
+struct SharedMemId {
+    struct IpcPerm permissions;
+    usize segment_size;
+    Time attach_time;
+    Time detach_time;
+    Time creation_time;
+    Pid creator_pid;
+    Pid modifier_pid;
+    SharedMemAttaches attaches;
+    usize __libc_reserved5;
+    usize __libc_reserved6;
+};
+
+struct ResourceLimit {
+    RLimit current;
+    RLimit max;
+};
+
+struct ResourceLimit64 {
+    RLimit64 current;
+    RLimit64 max;
+};
 
 #endif // ifndef EXALT_EXSYSTYPES_H

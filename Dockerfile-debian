@@ -1,0 +1,16 @@
+FROM debian:bookworm-slim
+
+RUN mkdir -p /usr/src/exalt
+WORKDIR /usr/src/exalt
+
+RUN apt update -y
+RUN apt install gcc make -y
+
+COPY src ./src/
+COPY include ./include/
+COPY tests ./tests/
+COPY Makefile .
+RUN make release -j $(nproc)
+
+RUN cc -o basic tests/basic.c -nostdlib -Ltarget/release/ -Iinclude -lexalt
+CMD ["./basic"]

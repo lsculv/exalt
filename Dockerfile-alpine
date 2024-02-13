@@ -1,0 +1,14 @@
+FROM alpine:3.19
+
+WORKDIR /usr/src/exalt
+
+RUN apk add gcc make musl-dev --no-cache
+
+COPY src ./src/
+COPY include ./include/
+COPY tests ./tests/
+COPY Makefile .
+RUN make release -j $(nproc)
+
+RUN cc -o basic tests/basic.c -nostdlib -Ltarget/release/ -Iinclude -lexalt
+CMD ["./basic"]
