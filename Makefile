@@ -13,13 +13,13 @@ DEBUG_DIR=$(BUILD_DIR)/debug
 RELEASE_OBJECTS=$(addprefix $(RELEASE_DIR)/, $(OBJECTS))
 DEBUG_OBJECTS=$(addprefix $(DEBUG_DIR)/, $(OBJECTS))
 
-CFLAGS=-Wall -Wextra -Werror -I $(HEADER_DIR) -nostdlib -nodefaultlibs
-RELEASE_FLAGS=-O2
-DEBUG_FLAGS=-g
+CFLAGS=-Wall -Wextra -I $(HEADER_DIR) -nostdlib -nodefaultlibs
+RELEASE_FLAGS=-O2 -Werror
+DEBUG_FLAGS=-ggdb
 
 .PHONY: release debug
-release: RELEASE
 debug: DEBUG
+release: RELEASE
 
 .PHONY: all
 all: release debug

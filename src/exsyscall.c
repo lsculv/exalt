@@ -21,3 +21,8 @@ i32 sys_close(u32 fd) {
 Offset sys_lseek(u32 fd, Offset offset, u32 whence) {
     return (Offset)syscall3(SYS_LSEEK, (void*)(usize)fd, (void*)offset, (void*)(usize)whence);
 }
+
+void sys_exit(i32 error_code) {
+    (void)syscall1(SYS_EXIT, (void*)(usize)error_code);
+    __builtin_unreachable();
+}

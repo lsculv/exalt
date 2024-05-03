@@ -5,6 +5,8 @@
 #define true 1
 #define false 0
 
+typedef char byte;
+
 // Supported integral types
 typedef signed char i8;
 typedef unsigned char u8;
