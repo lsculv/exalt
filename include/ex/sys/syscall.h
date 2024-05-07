@@ -15,6 +15,10 @@ extern void* syscall4(usize syscall_number, void* arg1, void* arg2, void* arg3, 
 extern void* syscall5(usize syscall_number, void* arg1, void* arg2, void* arg3, void* arg4, void* arg5);
 extern void* syscall6(usize syscall_number, void* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6);
 
+struct dummy {
+    int _f[0];
+};
+
 #define SYS_read 0
 #define SYS_write 1
 #define SYS_open 2
@@ -488,7 +492,10 @@ long sys_pwrite64(u32 fd, const char* buf, usize count, loff_t pos);
 long sys_preadv(u64 fd, const struct iovec* vec, u64 vlen, u64 pos_l, u64 pos_h);
 long sys_pwritev(u64 fd, const struct iovec* vec, u64 vlen, u64 pos_l, u64 pos_h);
 long sys_sendfile(i32 out_fd, i32 in_fd, loff_t* offset, usize count);
-long sys_pselect6(i32, fd_set*, fd_set*, fd_set*, struct __kernel_timespec*, void*);
+/// On succes, the number of file descriptors containted in the 3 passed descriptor sets is returned.
+/// On error, -errno is returned.
+int sys_pselect6(
+    i32 nfds, fd_set* readfds, fd_set* writefds, fd_set* exceptfds, struct __kernel_timespec* timeout, void* sigmask);
 long sys_ppoll(
     struct pollfd* fds, u32 nfds, struct __kernel_timespec* tmo_p, const sigset_t* sigmask, usize sigsetsize);
 long sys_signalfd4(i32 ufd, sigset_t* user_mask, usize sizemask, i32 flags);
@@ -566,7 +573,10 @@ long sys_tkill(pid_t pid, i32 sig);
 long sys_tgkill(pid_t tgid, pid_t pid, i32 sig);
 long sys_sigaltstack(const struct sigaltstack* uss, struct sigaltstack* uoss);
 long sys_rt_sigsuspend(sigset_t* unewset, usize sigsetsize);
-long sys_rt_sigaction(i32, const struct sigaction*, struct sigaction*, usize);
+/// On success, returns 0.
+/// On error, -errno is returned.
+/// The `sigsetsize` arugument must be set to `sizeof(sigset_t)`.
+int sys_rt_sigaction(i32 signum, const struct sigaction* act, struct sigaction* oldact, usize sigsetsize);
 long sys_rt_sigprocmask(i32 how, sigset_t* set, sigset_t* oset, usize sigsetsize);
 long sys_rt_sigpending(sigset_t* set, usize sigsetsize);
 long sys_rt_sigtimedwait(const sigset_t* uthese,
@@ -679,7 +689,9 @@ long sys_migrate_pages(pid_t pid, u64 maxnode, const u64* from, const u64* to);
 long sys_move_pages(pid_t pid, u64 nr_pages, const void** pages, const i32* nodes, i32* status, i32 flags);
 long sys_rt_tgsigqueueinfo(pid_t tgid, pid_t pid, i32 sig, siginfo_t* uinfo);
 long sys_perf_event_open(struct perf_event_attr* attr_uptr, pid_t pid, i32 cpu, i32 group_fd, u64 flags);
-long sys_accept4(i32, struct sockaddr*, i32*, i32);
+/// On success, returns a file descriptor for the accepted socket.
+/// On error, -errno is returned.
+int sys_accept4(i32 sockfd, struct sockaddr* addr, i32* addrlen, i32 flags);
 long sys_recvmmsg(i32 fd, struct mmsghdr* msg, u32 vlen, u32 flags, struct __kernel_timespec* timeout);
 long sys_wait4(pid_t pid, i32* stat_addr, i32 options, struct rusage* ru);
 long sys_prlimit64(pid_t pid, u32 resource, const struct rlimit64* new_rlim, struct rlimit64* old_rlim);

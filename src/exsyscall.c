@@ -286,8 +286,10 @@ long sys_pwritev(u64 fd, const struct iovec* vec, u64 vlen, u64 pos_l, u64 pos_h
 long sys_sendfile(i32 out_fd, i32 in_fd, loff_t* offset, usize count) {
     return (long)syscall4(SYS_sendfile, (void*)(usize)out_fd, (void*)(usize)in_fd, (void*)offset, (void*)count);
 }
-long sys_pselect6(i32, fd_set*, fd_set*, fd_set*, struct __kernel_timespec*, void*) {
-    return (long)syscall0(SYS_pselect6);
+int sys_pselect6(
+    i32 nfds, fd_set* readfds, fd_set* writefds, fd_set* exceptfds, struct __kernel_timespec* timeout, void* sigmask) {
+    return (int)(usize)syscall6(
+        SYS_pselect6, (void*)(usize)nfds, (void*)readfds, (void*)writefds, (void*)exceptfds, (void*)timeout, sigmask);
 }
 long sys_ppoll(
     struct pollfd* fds, u32 nfds, struct __kernel_timespec* tmo_p, const sigset_t* sigmask, usize sigsetsize) {
@@ -514,8 +516,8 @@ long sys_sigaltstack(const struct sigaltstack* uss, struct sigaltstack* uoss) {
 long sys_rt_sigsuspend(sigset_t* unewset, usize sigsetsize) {
     return (long)syscall2(SYS_rt_sigsuspend, (void*)unewset, (void*)sigsetsize);
 }
-long sys_rt_sigaction(i32, const struct sigaction*, struct sigaction*, usize) {
-    return (long)syscall0(SYS_rt_sigaction);
+int sys_rt_sigaction(i32 signum, const struct sigaction* act, struct sigaction* oldact, usize sigsetsize) {
+    return (int)(usize)syscall4(SYS_rt_sigaction, (void*)(usize)signum, (void*)act, (void*)oldact, (void*)sigsetsize);
 }
 long sys_rt_sigprocmask(i32 how, sigset_t* set, sigset_t* oset, usize sigsetsize) {
     return (long)syscall4(SYS_rt_sigprocmask, (void*)(usize)how, (void*)set, (void*)oset, (void*)sigsetsize);
@@ -882,8 +884,8 @@ long sys_perf_event_open(struct perf_event_attr* attr_uptr, pid_t pid, i32 cpu, 
                           (void*)(usize)group_fd,
                           (void*)flags);
 }
-long sys_accept4(i32, struct sockaddr*, i32*, i32) {
-    return (long)syscall0(SYS_accept4);
+int sys_accept4(i32 sockfd, struct sockaddr* addr, i32* addrlen, i32 flags) {
+    return (int)(usize)syscall4(SYS_accept4, (void*)(usize)sockfd, (void*)addr, (void*)addrlen, (void*)(usize)flags);
 }
 long sys_recvmmsg(i32 fd, struct mmsghdr* msg, u32 vlen, u32 flags, struct __kernel_timespec* timeout) {
     return (long)syscall5(
