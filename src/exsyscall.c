@@ -4,7 +4,7 @@
 #include <exalt.h>
 
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wcast-qual"
+#pragma GCC diagnostic ignored "-Wcast-qual" // The kernel doesn't care
 
 long sys_io_setup(u32 nr_reqs, aio_context_t* ctx) {
     return (long)syscall2(SYS_io_setup, (void*)(usize)nr_reqs, (void*)ctx);

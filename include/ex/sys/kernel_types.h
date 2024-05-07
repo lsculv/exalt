@@ -182,6 +182,11 @@ struct mount_attr {
     u64 userns_fd;
 };
 
+// This is to get rid of the warning about the `char str[0]` field.
+// Technically its a no-no to have a zero size array, but this is how the
+// kernel defines it so its what we use.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
 struct statmount {
     u32 size;
     u32 __spare1;
@@ -205,6 +210,7 @@ struct statmount {
     u64 __spare2[50];
     char str[0];
 };
+#pragma GCC diagnostic pop
 
 struct mnt_id_req {
     u32 size;
@@ -227,6 +233,11 @@ struct open_how {
     u64 resolve;
 };
 
+// This is to get rid of the warning about the `char d_name[0]` field.
+// Technically its a no-no to have a zero size array, but this is how the
+// kernel defines it so its what we use.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
 struct linux_dirent64 {
     u64 d_ino;
     i64 d_off;
@@ -234,6 +245,7 @@ struct linux_dirent64 {
     u8 d_type;
     char d_name[0];
 };
+#pragma GCC diagnostic pop
 
 struct iovec {
     void* iov_base;
@@ -425,12 +437,12 @@ struct sigevent {
 
 typedef void __signalfn_t(int);
 typedef __signalfn_t* __sighandler_t;
-typedef void __restorefn_t();
+typedef void __restorefn_t(void);
 typedef __restorefn_t* __sigrestore_t;
 
 struct sigaction {
     __sighandler_t sa_handler;
-    long unsigned int sa_flags;
+    u64 sa_flags;
     __sigrestore_t sa_restorer;
     sigset_t sa_mask;
 };
@@ -535,6 +547,11 @@ struct getcpu_cache {
     u64 blob[16];
 };
 
+// This is to get rid of the warning about the `char _f[0]` field.
+// Technically its a no-no to have a zero size array, but this is how the
+// kernel defines it so its what we use.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
 struct sysinfo {
     i64 uptime;
     u64 loads[3];
@@ -551,6 +568,7 @@ struct sysinfo {
     u32 mem_unit;
     char _f[0];
 };
+#pragma GCC diagnostic pop
 
 typedef i32 key_t;
 
@@ -658,6 +676,11 @@ struct shmid_ds {
     void* shm_unused3;
 };
 
+// This is to get rid of the warning about the `char sa_data[0]` field.
+// Technically its a no-no to have a zero size array, but this is how the
+// kernel defines it so its what we use.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
 typedef u16 sa_family_t;
 struct sockaddr {
     sa_family_t sa_family;
@@ -670,6 +693,7 @@ struct sockaddr {
         };
     };
 };
+#pragma GCC diagnostic pop
 
 struct clone_args {
     u64 flags;
@@ -764,11 +788,17 @@ struct perf_event_attr {
     u64 config3;
 };
 
+// This is to get rid of the warning about the `char f_handle[0]` field.
+// Technically its a no-no to have a zero size array, but this is how the
+// kernel defines it so its what we use.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
 struct file_handle {
     u32 handle_bytes;
     i32 handle_type;
     u8 f_handle[0];
 };
+#pragma GCC diagnostic pop
 
 union bpf_attr {
     struct {
@@ -1023,6 +1053,11 @@ union bpf_attr {
     } prog_bind_map;
 };
 
+// This is to get rid of the warning about the `char end[0]` field.
+// Technically its a no-no to have a zero size array, but this is how the
+// kernel defines it so its what we use.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
 struct rseq {
     u32 cpu_id_start;
     u32 cpu_id;
@@ -1032,6 +1067,7 @@ struct rseq {
     u32 mm_cid;
     char end[0];
 };
+#pragma GCC diagnostic push
 
 typedef i32 rwf_t;
 
@@ -1058,6 +1094,11 @@ struct cachestat {
     u64 nr_recently_evicted;
 };
 
+// This is to get rid of the warning about the `char ctx[0]` field.
+// Technically its a no-no to have a zero size array, but this is how the
+// kernel defines it so its what we use.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
 struct lsm_ctx {
     u64 id;
     u64 flags;
@@ -1065,13 +1106,20 @@ struct lsm_ctx {
     u64 ctx_len;
     u8 ctx[0];
 };
+#pragma GCC diagnostic pop
 
+// This is to get rid of the warning about the `char d_name[0]` field.
+// Technically its a no-no to have a zero size array, but this is how the
+// kernel defines it so its what we use.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
 struct linux_dirent {
     u64 d_ino;
     u64 d_off;
     u16 d_reclen;
     char d_name[0];
 };
+#pragma GCC diagnostic pop
 
 typedef i32 __kernel_daddr_t;
 
