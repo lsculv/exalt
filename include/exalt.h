@@ -1,6 +1,6 @@
 #pragma once
 
-#define bool _Bool;
+typedef _Bool bool;
 #define true 1
 #define false 0
 
