@@ -1,5 +1,10 @@
-#ifndef EXALT_EXERROR_H
-#define EXALT_EXERROR_H
+#pragma once
+
+#include <ex/string.h>
+
+struct Error {
+    String message;
+};
 
 typedef enum {
     EPERM = 1,             // Operation not permitted
@@ -137,5 +142,3 @@ typedef struct {
 } OsError;
 
 OsError new_os_error(OsErrorType type);
-
-#endif // ifndef EXALT_EXERROR_H

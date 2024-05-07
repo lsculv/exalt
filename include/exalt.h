@@ -1,10 +1,10 @@
-#ifndef EXALT_EXALT_H
-#define EXALT_EXALT_H
+#pragma once
 
 #define _Bool bool;
 #define true 1
 #define false 0
 
+// Should be used for streams of raw bytes that are not assumed to be text
 typedef char byte;
 
 // Supported integral types
@@ -36,5 +36,3 @@ typedef unsigned long int usize;
 #define U16_MAX (65535)
 #define U32_MAX (4294967295U)
 #define U64_MAX (18446744073709551615UL)
-
-#endif // ifndef EXALT_EXALT_H

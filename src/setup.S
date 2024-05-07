@@ -7,7 +7,7 @@
 // Much of the code and research was sourced from https://gist.github.com/tcoppex/443d1dd45f873d96260195d6431b0989
 .intel_syntax noprefix
 .text
-    .globl _start, syscall, syscall1, syscall2, syscall3, syscall4, syscall5
+    .global _start, syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6
 
     _start:
         // [1] p.30 | Section 3.4.1
@@ -26,8 +26,8 @@
         call main // Call the `main` function that the user implements.
         mov rdi, rax // `rax` now contains the return value of main, which we
                      // want to be the exit status of our program (see syscall section).
-        mov rax, 60 // see syscall section.
-        syscall // Making the exit syscall.
+        mov rax, 231// see syscall section.
+        syscall // Making the exit_group syscall.
         ret // The program should have already exited by now, if this is reached 
             // it will SEGFAULT the program.
 
@@ -92,7 +92,6 @@
         mov r9,  qword ptr [rsp+8]
         syscall
         ret
-        
 
 // Resources:
 // [1] AMD64 ABI Draft 0.99.6 – July 2, 2012
